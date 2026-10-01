@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Ingest",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "services.ingest.main",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "name": "Simulator",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "services.simulator.main",
+      "args": ["--vehicles", "2000", "--duration", "240"],
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

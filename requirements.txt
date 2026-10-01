@@ -4,3 +4,6 @@ numpy
 python-dotenv
 pytest
 ruff
+
+confluent-kafka>=2.5
+redis>=5
