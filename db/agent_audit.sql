@@ -1,0 +1,3 @@
+CREATE TABLE IF NOT EXISTS agent_audit (
+  audit_id BIGSERIAL PRIMARY KEY, at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  username TEXT NOT NULL, fleet_id INT NOT NULL, action TEXT NOT NULL, detail JSONB);

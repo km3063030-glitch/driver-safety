@@ -3,7 +3,26 @@ faker
 numpy
 python-dotenv
 pytest
+pytest-cov
 ruff
 
 confluent-kafka>=2.5
 redis>=5
+
+psycopg2-binary
+clickhouse-connect
+
+scipy
+
+fastapi 
+uvicorn 
+pyjwt 
+redis
+
+scikit-learn 
+pandas
+pyarrow
+
+google-genai
+
+pymongo

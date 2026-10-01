@@ -1,3 +1,4 @@
+from confluent_kafka import KafkaException
 from confluent_kafka.admin import AdminClient, NewTopic
 
 from services.common import config
@@ -15,7 +16,7 @@ def main():
         try:
             future.result()
             print("created", name)
-        except Exception as exc:
+        except KafkaException as exc:
             print(name, "->", exc)
 
 

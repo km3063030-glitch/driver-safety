@@ -1,0 +1,53 @@
+name: security-scans
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: URL for an already-running disposable API environment (DAST only)
+        required: false
+        type: string
+permissions:
+  contents: read
+  security-events: write
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: pypa/gh-action-pipx@v2
+      - run: pipx install semgrep
+      - run: semgrep scan --config p/python --config p/javascript --config p/secrets --sarif --output semgrep.sarif .
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
+  trivy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln,misconfig,secret
+          format: sarif
+          output: trivy.sarif
+          severity: CRITICAL,HIGH,MEDIUM
+          exit-code: "0"
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy.sarif
+  zap-baseline:
+    if: github.event_name == 'workflow_dispatch' && inputs.target_url != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: zaproxy/action-baseline@v0.14.0
+        with:
+          target: ${{ inputs.target_url }}
+          allow_issue_writing: false

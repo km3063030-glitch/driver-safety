@@ -10,9 +10,11 @@ from confluent_kafka import Consumer, Producer
 from psycopg.types.json import Jsonb
 
 from services.common import config
+from services.common.ch_writer import ClickHouseWriter
 from services.common.events import HARSH, validate
 from services.ingest.rules import HarshBurstRule
 
+writer = None
 
 def write_alerts(conn, producer, alerts):
     rows = []
@@ -42,6 +44,8 @@ def write_alerts(conn, producer, alerts):
 
 
 def main():
+    global writer
+    writer = ClickHouseWriter()
     consumer = Consumer(
         {
             "bootstrap.servers": config.KAFKA_BOOTSTRAP,
@@ -104,6 +108,7 @@ def main():
 
                 alerts = []
                 for event in fresh:
+                    writer.add(event)
                     if event["evt"] in HARSH:
                         count = rule.observe(event["vin"], event["_t"])
                         if count is not None:
@@ -118,18 +123,23 @@ def main():
                         print("alert write failed:", exc)
 
             producer.poll(0)
+
+        if writer.due():
+            writer.flush()
             consumer.commit(asynchronous=False)
 
         now = time.time()
         if now - last_report >= 5:
             rate = (stats["consumed"] - last_consumed) / (now - last_report)
             counts = " ".join(f"{k}={v}" for k, v in sorted(stats.items()))
-            print(f"{rate:8.0f} msg/s | {counts}")
+            print(f"{rate:8.0f} msg/s | {counts} written={writer.written}")
             last_report, last_consumed = now, stats["consumed"]
         if now - last_prune >= 60:
             rule.prune(now)
             last_prune = now
 
+    writer.flush()
+    consumer.commit(asynchronous=False)
     consumer.close()
     producer.flush(5)
     conn.close()

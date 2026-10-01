@@ -1,0 +1,7 @@
+[lint]
+# FastAPI's dependency injection is conventionally declared in endpoint defaults.
+ignore = ["B008"]
+
+[lint.per-file-ignores]
+"services/simulator/fleet.py" = ["RUF023"]
+"tests/test_vin.py" = ["I001"]
