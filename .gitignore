@@ -1,8 +1,32 @@
 .venv/
 .env
+.env.*
+!.env.example
 __pycache__/
-node_modules/
-dist/
-.coverage
+*.py[cod]
 .pytest_cache/
 .ruff_cache/
+.coverage*
+htmlcov/
+node_modules/
+dist/
+evidence/
+
+# Local data, logs, and operating-system files
+*.db
+*.sqlite
+*.sqlite3
+*.parquet
+*.log
+.DS_Store
+Thumbs.db
+
+# Credentials and local cloud/deployment state
+*.pem
+*.key
+*.p12
+*.pfx
+.aws/
+.terraform/
+*.tfstate
+*.tfstate.*
