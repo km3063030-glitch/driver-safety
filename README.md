@@ -186,6 +186,22 @@ npm run build
 
 The local validation record is in [`evidence/stage8-local-validation.md`](evidence/stage8-local-validation.md). The load-test procedure is in [`load_tests/README.md`](load_tests/README.md).
 
+## Demo Login
+
+After starting the application, open the dashboard at http://127.0.0.1:5173/.
+
+Use either of the following demo accounts to log in:
+
+| User ID    | Password   |
+| ---------- | ---------- |
+| `manager1` | `demo1234` |
+| `manager2` | `demo1234` |
+
+Each manager is assigned to a separate fleet, so the dashboard only shows the vehicles, scores, alerts, and other data belonging to that manager's fleet.
+
+**Note:** These credentials are for local demonstration only and should not be used in a production environment.
+
+
 ## Scope and Limitations
 
 This repository currently documents and runs a local prototype. AWS deployment, 100K events/second performance, 3× burst and soak results, latency targets, and broker-failure recovery have not been demonstrated. The local Redpanda Compose setup is single-node.
